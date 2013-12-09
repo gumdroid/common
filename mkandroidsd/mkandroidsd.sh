@@ -89,7 +89,7 @@ if [ -b ${1}4 ]; then
     mount "$1"4 /mnt
 else
     mkfs.ext4 -L data "$1"p4 &> /dev/null
-    mount "$1"p6 /mnt
+    mount "$1"p4 /mnt
 fi
 tar jxvf ${OUTDIR}/${DATA} --strip-components=1 -C /mnt &> /dev/null
 sync
