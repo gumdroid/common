@@ -11,7 +11,6 @@ KERNEL_OUTPUT_DIR := $(abspath $(PRODUCT_OUT)/boot)
 # build it and copy executables; avoid rebuilds if possible so don't reconfig. 
 kernel_not_configured := $(wildcard $(KERNEL_BUILD_DIR)/.config)
 build-kernel:
-	@-mkdir -p $(KERNEL_BUILD_DIR)
 ifeq ($(strip $(kernel_not_configured)),)
 	$(MAKE) -C $(KERNEL_SOURCE_DIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) $(KERNEL_CONFIG)_defconfig
 endif
