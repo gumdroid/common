@@ -22,8 +22,8 @@ ifeq ($(strip $(uboot_not_configured)),)
 endif
 	$(hide) $(MAKE) O=$(UBOOT_BUILD_DIR) -C $(UBOOT_SOURCE_DIR) CROSS_COMPILE=$(UBOOT_BARE_TOOLCHAIN)
 	$(hide) mkdir -p $(UBOOT_OUTPUT_DIR)
-	$(hide) $(ACP) $(UBOOT_BUILD_DIR)/MLO $(UBOOT_OUTPUT_DIR)/
-	$(hide) $(ACP) $(UBOOT_BUILD_DIR)/u-boot.img $(UBOOT_OUTPUT_DIR)/
+	$(hide) cp $(UBOOT_BUILD_DIR)/MLO $(UBOOT_OUTPUT_DIR)/
+	$(hide) cp $(UBOOT_BUILD_DIR)/u-boot.img $(UBOOT_OUTPUT_DIR)/
 
 clean-uboot:
 	$(hide) $(MAKE) O=$(UBOOT_BUILD_DIR) -C $(UBOOT_SOURCE_DIR) CROSS_COMPILE=$(UBOOT_BARE_TOOLCHAIN) distclean
