@@ -7,12 +7,10 @@ LOCAL_MODULE := sgx
 SGX_SOURCE_PATH := $(abspath $(TOP)/hardware/ti/sgx)
 
 # both the kernel and the root file system need to be in place
-sgx: droid linux
-	$(hide) -rm $(PRODUCT_OUT)/system.tar.bz2
-	$(hide) -rm $(PRODUCT_OUT)/userdata.tar.bz2
-	unset OUT
-	$(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES)
-	$(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES) install
+# invalidate old tarballs by cleaning them out
+sgx: droid linux clean-tarballs
+	unset OUT && $(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES)
+	unset OUT && $(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES) install
 
 clean-sgx:
 	$(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES) clean
