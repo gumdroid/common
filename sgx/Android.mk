@@ -13,7 +13,7 @@ sgx: droid linux clean-tarballs
 	unset OUT && $(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES) install
 
 clean-sgx:
-	$(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES) clean
+	$(hide) -$(MAKE) -C $(SGX_SOURCE_PATH) ANDROID_ROOT_DIR=$(realpath $(TOP)) OMAPES=$(OMAPES) clean
 
 # sgx adds files to the system & data directories so we'd need to rebuild the tarballs
 systemtarball: sgx

@@ -26,8 +26,8 @@ endif
 	$(hide) cp $(UBOOT_BUILD_DIR)/u-boot.img $(UBOOT_OUTPUT_DIR)/
 
 clean-uboot:
-	$(hide) $(MAKE) O=$(UBOOT_BUILD_DIR) -C $(UBOOT_SOURCE_DIR) CROSS_COMPILE=$(UBOOT_BARE_TOOLCHAIN) distclean
-	-rm $(UBOOT_OUTPUT_DIR)/MLO $(UBOOT_OUTPUT_DIR)/u-boot.img
+	$(hide) -$(MAKE) O=$(UBOOT_BUILD_DIR) -C $(UBOOT_SOURCE_DIR) CROSS_COMPILE=$(UBOOT_BARE_TOOLCHAIN) distclean
+	$(hide) -rm $(UBOOT_OUTPUT_DIR)/MLO $(UBOOT_OUTPUT_DIR)/u-boot.img
 
 # Our device wants u-boot, add this to the bootfiles target
 bootfiles: uboot

@@ -21,7 +21,7 @@ endif
 	$(hide) cp $(KERNEL_SOURCE_DIR)/arch/arm/boot/uImage $(KERNEL_OUTPUT_DIR)/
 
 clean-linux:
-	$(hide) $(MAKE) -C $(KERNEL_SOURCE_DIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) mrproper
+	$(hide) -$(MAKE) -C $(KERNEL_SOURCE_DIR) ARCH=arm CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) mrproper
 	$(hide) -rm $(KERNEL_OUTPUT_DIR)/uImage
 
 # Our device wants linux, add this to the bootfiles target
