@@ -13,7 +13,7 @@ UBOOT_BUILD_DIR := $(abspath $(PRODUCT_OUT)/obj/u-boot)
 UBOOT_OUTPUT_DIR := $(abspath $(PRODUCT_OUT)/boot)
 
 # build it and copy executables; avoid rebuilds if possible so don't reconfig. 
-uboot_not_configured := $(wildcard $(UBOOT_BUILD_DIR)/include/config.h)
+uboot_not_configured := $(wildcard $(UBOOT_BUILD_DIR)/.config)
 
 uboot:
 	$(hide) mkdir -p $(UBOOT_BUILD_DIR)
