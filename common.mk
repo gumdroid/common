@@ -3,7 +3,8 @@ include $(call all-makefiles-under,$(LOCAL_PATH))
 
 PRODUCT_PACKAGES += \
     mkandroidsd \
-    devmem2
+    devmem2 \
+    canary
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
 

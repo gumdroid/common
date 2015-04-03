@@ -1,0 +1,26 @@
+Canary in the Coal Mine
+=======================
+This file gets installed to /system/etc/canary on the target.  It serves *only*
+to provide a standard Android build target.  A signature example:
+ * we build the Linux kernel from source using a non-Android style Makefile
+ * the kernel build installs files into the /system output directory
+ * as such, an updated kernel means system.img etc. needs to be updated
+ * PRODUCT_PACKAGES += "linux" doesn't work---Linux is not an Android Makefile
+ * adding a dependency on the 'droid' target is also insufficient---too late
+ * so...
+
+We add this dummy 'canary' module to our build:
+ PRODUCT_PACKAGES += canary
+
+In any non-Android style Makefile that needs to install files into system, we
+add the desired Make target as a pre-requisite on the output of the canary
+module:
+  $(TARGET_OUT)/etc/canary: $(INSTALLED_KERNEL_TARGET)
+
+Ta-da!  Okay, that is a bit convoluted but I haven't figured out how to
+convince the Android Build System to accomodate this dependency otherwise. And
+yes, we actually could use any standard Android file as a dependency---making
+it very explicit here seems a little less magical :).
+
+Tips and suggestions welcome!
+(ashcharles@gmail.com)
