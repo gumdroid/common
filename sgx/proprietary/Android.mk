@@ -11,7 +11,7 @@ LOCAL_SRC_FILES := $(_base_path)/$(notdir $1)
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_SUFFIX := .so
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_PATH := $$(TARGET_OUT_VENDOR)/$(dir $1)
+LOCAL_MODULE_PATH := $$(TARGET_OUT)/$(dir $1)
 include $$(BUILD_PREBUILT)
 endef
 
@@ -21,7 +21,7 @@ LOCAL_MODULE := $(basename $(notdir $1))
 LOCAL_SRC_FILES := $(_base_path)/$1
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_CLASS := EXECUTABLES
-LOCAL_MODULE_PATH := $$(TARGET_OUT_VENDOR)/bin
+LOCAL_MODULE_PATH := $$(TARGET_OUT)/bin
 include $$(BUILD_PREBUILT)
 endef
 
@@ -65,6 +65,7 @@ prebuilt_sgx_vendor_bins := \
     sgx_flip_test \
     sgx_init_test \
     sgx_render_flip_test \
+    pvr-service \
     testwrap \
     texture_benchmark
 
