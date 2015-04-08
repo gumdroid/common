@@ -21,12 +21,10 @@ KERNEL_SOURCE_DIR := $(abspath $(TOP)/kernel)
 KERNEL_BUILD_DIR := $(abspath $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ)
 KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
 
+# for zImage (and dtbs)
 TARGET_OUT_BOOT := $(TARGET_OUT)/boot
-
-# standard linux paths---here for the sake of cleaning only as kbuild takes
-# care of creating directories as needed
 TARGET_OUT_MODULES := $(TARGET_OUT)/lib/modules
-TARGET_OUT_FW := $(TARGET_OUT)/lib/firmware
+TARGET_OUT_FW := $(TARGET_OUT)/etc/firmware
 
 # Technically, all output from a kernel built would be a target...but
 # it is hard to build this list so just use zImage as the target as it
@@ -36,11 +34,8 @@ KERNEL_OUTPUT_FILE := $(KERNEL_BUILD_DIR)/arch/$(TARGET_ARCH)/boot/zImage
 # Top-level rule to actually install the desired output
 # * the core build system expects a $(INSTALLED_KERNEL_TARGET) file
 #   -- no name changes allowed
-linux $(INSTALLED_KERNEL_TARGET): $(KERNEL_OUTPUT_FILE)
-	$(hide) $(ACP) $^ $(INSTALLED_KERNEL_TARGET)
-
-$(TARGET_OUT_BOOT)/zImage: $(KERNEL_OUTPUT_FILE) | $(TARGET_OUT_BOOT)
-	$(hide) $(ACP) $(KERNEL_OUTPUT_FILE) $@
+linux $(INSTALLED_KERNEL_TARGET): $(KERNEL_OUTPUT_FILE) $(ACP)
+	$(hide) $(ACP) $(KERNEL_OUTPUT_FILE) $(INSTALLED_KERNEL_TARGET)
 
 # corresponding convenience make target for cleaning
 clean-linux:
@@ -53,19 +48,25 @@ $(KERNEL_BUILD_DIR) $(TARGET_OUT_BOOT):
 
 # Copy the product-specific defconfig (set as $(KERNEL_CONFIG)) as
 # the kernel configuration.
-$(KERNEL_BUILD_DIR)/.config: $(KERNEL_CONFIG) | $(KERNEL_BUILD_DIR)
+$(KERNEL_BUILD_DIR)/.config: $(KERNEL_CONFIG) $(ACP) | $(KERNEL_BUILD_DIR)
 	$(hide) $(ACP) $(KERNEL_CONFIG) $@
 	$(hide) $(MAKE) O=$(KERNEL_BUILD_DIR) -C $(KERNEL_SOURCE_DIR) ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) oldconfig
 
+define install-kernel-extras
+$(hide) -$(MAKE) INSTALL_MOD_PATH=$(abspath $(TARGET_OUT)) O=$(KERNEL_BUILD_DIR) -C $(KERNEL_SOURCE_DIR) ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) INSTALL_MOD_STRIP=1 modules_install &>/dev/null
+$(hide) -$(MAKE) INSTALL_FW_PATH=$(abspath $(TARGET_OUT_FW)) O=$(KERNEL_BUILD_DIR) -C $(KERNEL_SOURCE_DIR) ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) firmware_install &>/dev/null
+$(hide) -$(MAKE) INSTALL_DTBS_PATH=$(abspath $(TARGET_OUT_BOOT)) O=$(KERNEL_BUILD_DIR) -C $(KERNEL_SOURCE_DIR) ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) dtbs_install &>/dev/null
+endef
+
 # Consider all files in the KERNEL_SOURCE_DIR to be prerequsites for building
-# the kernel.  If any source files change, update the build. Build and install
-# the kernel image, any modules, standard firmware, and dtbs to /system. We
-# don't use the dtbs_install---this is a somewhat new make target.
-$(KERNEL_OUTPUT_FILE): $(shell find $(KERNEL_SOURCE_DIR) -type f) $(KERNEL_BUILD_DIR)/.config | $(TARGET_OUT_BOOT)
+# the kernel.  If any source files change, update the build (remove zImage to
+# ensure it is updated even if a rebuild doesn't particularly update it). Build
+# and install the kernel image, any modules, standard firmware, and dtbs to
+# /system.
+$(KERNEL_OUTPUT_FILE): $(shell find $(KERNEL_SOURCE_DIR) -type f) $(KERNEL_BUILD_DIR)/.config $(ACP) | $(TARGET_OUT_BOOT)
+	$(hide) rm -f $(KERNEL_OUTPUT_FILE)
 	$(hide) $(MAKE) O=$(KERNEL_BUILD_DIR) -C $(KERNEL_SOURCE_DIR) ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX)
-	$(hide) $(MAKE) INSTALL_MOD_PATH=$(abspath $(TARGET_OUT)) O=$(KERNEL_BUILD_DIR) -C $(KERNEL_SOURCE_DIR) ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) INSTALL_MOD_STRIP=1 modules_install
-	$(hide) -$(MAKE) INSTALL_MOD_PATH=$(abspath $(TARGET_OUT)) O=$(KERNEL_BUILD_DIR) -C $(KERNEL_SOURCE_DIR) ARCH=$(TARGET_ARCH) CROSS_COMPILE=$(KERNEL_TOOLCHAIN_PREFIX) firmware_install
-	#$(hide) -$(ACP) $(shell find $(KERNEL_BUILD_DIR) -type f -regex '.*\.dtb') $(TARGET_OUT_BOOT)
+	$(install-kernel-extras) || true
 	$(hide) $(ACP) $@ $(TARGET_OUT_BOOT)/zImage
 
 $(TARGET_OUT)/etc/canary: $(INSTALLED_KERNEL_TARGET)
