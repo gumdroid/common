@@ -2,9 +2,8 @@ LOCAL_PATH := $(call my-dir)
 include $(call all-makefiles-under,$(LOCAL_PATH))
 
 ## Setup *distro*-type choices for Gumstix
-PRODUCT_CHARACTERISTICS := tablet,nosdcard
+PRODUCT_CHARACTERISTICS := nosdcard
 DEVICE_PACKAGE_OVERLAYS := device/gumstix/common/overlay
-
 
 # Precise garbage collection
 PRODUCT_TAGS += dalvik.gc.type-precise
@@ -38,8 +37,6 @@ PRODUCT_PACKAGES += \
     mkandroidsd \
     devmem2 \
     canary
-
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core.mk)
 
 .phony: gumstix
 
