@@ -23,7 +23,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
         tinycap \
         tinymix \
-        tinyplay
+        tinyplay \
+        libsrec_jni
 
 # Live Wallpapers
 PRODUCT_PACKAGES += \
