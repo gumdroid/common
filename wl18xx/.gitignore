@@ -1,0 +1,12 @@
+*.o.d
+*.o
+*.o.cmd
+modules.order
+.compat_autoconf*
+.config*
+.tmp_versions
+Module.symvers
+*.ko.cmd
+*.ko
+*mod.c
+modules
