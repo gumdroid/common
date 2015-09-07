@@ -1,3 +1,5 @@
+ifeq ($(TARGET_DEVICE),pepper)
+
 .PHONY: wl18xx-km clean-wl18xx-km
 WL18XX_KM_SRC_DIR := $(abspath $(TOP)/device/gumstix/common/wl18xx)
 WL18XX_KM_BUILD_DIR := $(abspath $(TARGET_OUT_INTERMEDIATES)/WL18XX_OBJ)
@@ -36,3 +38,4 @@ clean-wl18xx-km:
 	$(hide) -rm -rf $(WL18XX_KM_OUTPUT_FILES)
 	$(hide) -rm -rf $(WL18XX_KM_BUILD_DIR)
 
+endif # pepper
